@@ -1,0 +1,6 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Siva/project_1/project_1.sim/sim_1/impl/func/xsim/tb_digital_clock_func_impl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bin2hex
+INFO: [VRFC 10-311] analyzing module bin2hex_0
+INFO: [VRFC 10-311] analyzing module clk_div
+INFO: [VRFC 10-311] analyzing module digital_clock
+INFO: [VRFC 10-311] analyzing module glbl
