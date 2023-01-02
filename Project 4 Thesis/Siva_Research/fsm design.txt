@@ -1,0 +1,122 @@
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.math_real.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
+
+entity fsm is
+ 
+port(
+clk:in std_logic;
+	Dividend: in std_logic_vector(7 downto 0);
+	Divisor: in std_logic_vector(7 downto 0);
+	start: in std_logic;
+	fm : in std_logic;
+	Quotient :out std_logic_vector(7 downto 0);
+	Remainder :out std_logic_vector(7 downto 0);
+	Done : out std_logic;
+ op : out std_logic
+);
+
+end fsm;
+
+
+architecture arch_fsm of fsm is 
+
+type states is (s1, S2, S3,s4,s5,s6);
+signal state_machine1: states:= s4;
+signal state_machine: states:= s1;
+signal count: integer range -8 to 7;	
+signal A, B:  std_logic_vector(7 downto 0);
+signal R,Q : std_logic_vector(7 downto 0);
+	signal s:std_logic;
+	begin
+
+	seq : process(clk)   
+	variable clk_count: integer:=0;
+	begin
+if(clk'event and clk = '1' ) then 
+case state_machine1 is
+				when s4 => 
+				if clk_count = 25000000 then
+clk_count:=0;
+				state_machine1 <= s5;
+				else   
+	
+				clk_count := clk_count + 1;
+end if;
+
+when s5 => 
+if clk_count = 25000000 then
+clk_count:=0;
+state_machine1 <= s6;
+				else 
+				clk_count := clk_count + 1;
+end if;
+
+when s6 => 
+if clk_count = 25000000 then
+				s <='1';
+				clk_count:=0;
+				state_machine1 <= s4;  
+				else 
+				clk_count := clk_count + 1;
+end if;
+
+when others =>state_machine1 <= s4;
+end case;
+end if;
+end process seq; 
+
+process(clk)
+begin
+		if(clk'event and clk = '1') then
+		if(fm='0') then
+         case state_machine is
+				when s1 => 
+					R <= "00000000";
+					count <= 7;
+					A <= Dividend ;
+				     B <= Divisor;
+				if(start = '1') then
+				state_machine <= s2;
+				else A <= Dividend ;
+				     B <= Divisor;
+			 end if;
+			 
+	when s2 => 
+				R <= R ( 6 downto 0 ) & A (7);
+				A <= A ( 6 downto 0 ) & "0" ;
+		      state_machine <= s3;
+			
+	when s3 =>
+            Count <= Count-1; 
+			
+		if (R >= Divisor) then
+	      Q <= Q (6 downto 0) & "1";
+			R <= R - Divisor;
+			   else 
+				  Q <= Q (6 downto 0) & "0";
+				  end if;
+				  
+			if (Count <= 0) then
+				done <= '1';
+				state_machine <= s1;
+					else state_machine <= s2;
+				end if;
+				
+				when others =>state_machine <= s1;
+
+				
+	end case;
+	end if;
+	end if;
+end process;
+		quotient<=q;
+		remainder<=r;
+
+op<=s;
+
+	end arch_fsm;
