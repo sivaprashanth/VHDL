@@ -1,0 +1,4 @@
+-- attribute rloc_range of SRL16E_inst: label is "X0y0:X28Y40"; -- region 1
+  --attribute rloc_range of SRL16E_inst: label is "X0y41:X28Y79"; -- region 2
+-- attribute rloc_range of SRL16E_inst: label is "X32Y0:X52Y40"; -- region 3
+-- attribute rloc_range of SRL16E_inst: label is "X32Y41:X52Y79"; -- region 4

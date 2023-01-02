@@ -1,0 +1,35 @@
+import java.math.BigInteger;
+import java.util.Scanner;
+
+public class hamming {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int i,count=0;
+String a,b;
+Scanner sc=new Scanner(System.in);
+a=sc.next();
+// unsigned int d;
+// Printing the conversion of hex o binary
+b=hexToBin(a);
+Character c='1';
+System.out.println(b);
+// Printing the hamming distance
+for (i=0;i<b.length();i++)
+{
+	if(b.charAt(i)==c)
+	{
+		count++;
+	}
+	
+}
+
+System.out.println("Hamming Weight - "+count);
+	
+	}
+	
+	static String hexToBin(String s) {
+		  return new BigInteger(s, 16).toString(2);
+		}
+
+}

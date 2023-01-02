@@ -1,0 +1,137 @@
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+---- Uncomment the following library declaration if instantiating
+---- any Xilinx primitives in this code.
+library UNISIM;
+use UNISIM.VComponents.all;
+
+entity PUF is
+    Port ( clk : in  STD_LOGIC;
+           out1 : out  STD_LOGIC;
+			  shift_in : in STD_LOGIC
+			  );
+end PUF;
+
+architecture Behavioral of PUF is
+
+    signal OUT_INT : STD_LOGIC;
+	 signal CARRY_OUT : STD_LOGIC_VECTOR(2 downto 0);
+	 signal CARRY_OUT2 : STD_LOGIC_VECTOR(2 downto 0);
+	 signal dummy2 : STD_LOGIC_VECTOR(3 downto 0);
+	 signal dummy3 : STD_LOGIC_VECTOR(3 downto 0);
+	 signal OUT_INT2 : STD_LOGIC;
+	 signal O1, O2 : STD_LOGIC;
+	 signal CARRY_BW : STD_LOGIC; -- the carry signal between 2 4-bit carry chains
+	 
+	 signal shift_in_not : STD_LOGIC := '0';
+	 
+	 attribute rloc: string;
+	 attribute rloc_range : string;
+	  -- These constraints ensure that the shift registers and carry chains
+	 -- are located in the correct positions.  (See ASP-DAC paper).
+	 -- rloc: relative location constraints
+	 -- Note that these constrain the sub-elements WITHIN a PUF bit.
+	 -- The PUF bit itself is relocatable anywhere on the device.
+	 attribute rloc of FDCPE_inst: label is "X0Y1";
+	 attribute rloc of CARRY4_inst: label is "X0Y1";
+    attribute rloc of SRL16E_inst: label is "X0Y1";
+	 attribute rloc of CARRY4_inst2: label is "X0Y0";
+	 attribute rloc of SRL16E_inst2: label is "X0Y0";
+	 attribute rloc_range of SRL16E_inst: label is "X0y0:X28Y40"; -- region 1
+  --attribute rloc_range of SRL16E_inst: label is "X0y41:X28Y79"; -- region 2
+-- attribute rloc_range of SRL16E_inst: label is "X32Y0:X52Y40"; -- region 3
+-- attribute rloc_range of SRL16E_inst: label is "X32Y41:X52Y79"; -- region 4
+
+
+
+begin
+ 
+		shift_in_not <= not shift_in;
+	
+		SRL16E_inst : SRL16E -- the "top" shift register instance
+		generic map (
+		INIT => X"5555")
+		port map (
+			Q => O1, -- SRL data output
+			A0 => '1', -- Select[0] input
+			A1 => '1', -- Select[1] input
+			A2 => '1', -- Select[2] input
+			A3 => '1', -- Select[3] input
+			CE => '1', -- Clock enable input
+			CLK => CLK, -- Clock input
+			D => shift_in -- SRL data input
+		);
+
+		SRL16E_inst2 : SRL16E -- the "bottom" shift register instance
+		generic map (
+		INIT => X"AAAA")
+		port map (
+			Q => O2, -- SRL data output
+			A0 => '1', -- Select[0] input
+			A1 => '1', -- Select[1] input
+			A2 => '1', -- Select[2] input
+			A3 => '1', -- Select[3] input
+			CE => '1', -- Clock enable input
+			CLK => CLK, -- Clock input
+			D => shift_in_not -- SRL data input
+		);
+
+      CARRY4_inst : CARRY4 -- the "top" carry chain
+		port map (
+			CO(3) => OUT_INT,
+			CO(2 downto 0) => CARRY_OUT, -- 4-bit carry out
+			O => dummy2, -- 4-bit carry chain XOR data out
+			CI => CARRY_BW, -- 1-bit carry cascade input
+			CYINIT => '0', -- 1-bit carry initialization
+			DI => "0000", -- 4-bit carry-MUX data in
+			S(3) => O1,
+			S(2) => '1',
+			S(1) => '1',
+			S(0) => '1'
+		);
+
+      CARRY4_inst2 : CARRY4 -- the "bottom" carry chain
+		port map (
+			CO(3) => CARRY_BW,
+			CO(2 downto 0) => CARRY_OUT2, -- 4-bit carry out
+			O => dummy3, -- 4-bit carry chain XOR data out
+			CI => '0', -- 1-bit carry cascade input
+			CYINIT => '1', -- 1-bit carry initialization
+			DI => "0000", -- 4-bit carry-MUX data in
+			S(3) => '1',
+			S(2) => '1',
+			S(1) => O2,
+			S(0) => '1'
+		);
+
+
+      -- This FF detects the PULSE on the OUT_INT signal
+		FDCPE_inst : FDCPE
+		generic map (
+			INIT => '0') -- Initial value of register (?0? or ?1?)
+		port map (
+			Q => OUT_INT2, -- Data output
+			C => CLK, -- Clock input
+  		   CE => '0', -- Clock enable input
+			CLR => '0', -- Asynchronous clear input
+			D => OUT_INT2, -- Data input
+			PRE => OUT_INT  -- Asynchronous set input
+		);
+
+		FDCPE_inst2 : FDCPE
+		generic map (
+			INIT => '0') -- Initial value of register (?0? or ?1?)
+		port map (
+			Q => OUT1, -- Data output
+			C => clk, -- Clock input
+  		   CE => '1', -- Clock enable input
+			CLR => '0', -- Asynchronous clear input
+			D => OUT_INT2, -- Data input
+			PRE => '0' -- Asynchronous set input
+		);
+
+end Behavioral;

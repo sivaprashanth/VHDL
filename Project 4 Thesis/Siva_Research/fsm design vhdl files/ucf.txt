@@ -1,0 +1,16 @@
+net "clk" LOC = "U11";
+net "Remainder<0>" LOC = "F11";
+net "Remainder<1>" LOC = "G11";
+net "Remainder<2>" LOC = "G10";
+net "Remainder<3>" LOC = "F9";
+net "challenge<0>" LOC = "A8";
+net "challenge<1>" LOC = "A9";
+net "challenge<2>" LOC = "B9";
+net "challenge<3>" LOC = "B10";
+net "a" LOC = "E9";
+net "b" LOC = "D9";
+net "go" LOC = "E10";
+net "Quotient<0>" LOC = "E12";
+net "Quotient<1>" LOC = "D12";
+net "Quotient<2>" LOC = "F8";
+net "Quotient<3>" LOC = "G9";

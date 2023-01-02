@@ -1,0 +1,7 @@
+1) Need to write a report on the implementation of Anderson's PUF having simulation and implementation results.
+
+2) Report on shortcomings of Anderson's PUF : How to overcome it? implement evaluate and show the results.
+
+3) applications of anderson's puf in hardware security.
+
+ 
