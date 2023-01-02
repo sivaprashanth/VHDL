@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Mon Jan  2 05:43:43 2023
+# Process ID: 20796
+# Current directory: C:/Users/Siva/project_5/project_5.runs/synth_1
+# Command line: vivado.exe -log seven_segment_display_VHDL.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source seven_segment_display_VHDL.tcl
+# Log file: C:/Users/Siva/project_5/project_5.runs/synth_1/seven_segment_display_VHDL.vds
+# Journal file: C:/Users/Siva/project_5/project_5.runs/synth_1\vivado.jou
+# Running On: DESKTOP-H5S53RM, OS: Windows, CPU Frequency: 2904 MHz, CPU Physical cores: 2, Host memory: 12777 MB
+#-----------------------------------------------------------
+source seven_segment_display_VHDL.tcl -notrace
